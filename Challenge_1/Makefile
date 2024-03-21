@@ -5,7 +5,7 @@ LDFLAGS ?=
 LDLIBS  ?= 
 
 
-SRCS = main.cpp
+SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 HEADERS = $(wildcard *.hpp)
 
@@ -15,7 +15,7 @@ EXEC = main
 
 .DEFAULT_GOAL = all
 
-all: $(EXEC) $(EXEC_MUPARSER)
+all: $(EXEC)
 
 
 $(EXEC): $(OBJS)
