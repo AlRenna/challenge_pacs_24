@@ -19,7 +19,7 @@ int main() {
   Parameters params("data.txt");
   params.fun = f;
   params.grad = grad_f;
-  params.x_0 = {0, 0};
+  // params.x_0 = {0, 0};
   // params.eps_r = 1e-6;
   // params.eps_s = 1e-6;
   // params.alpha_0 = 1.0;
