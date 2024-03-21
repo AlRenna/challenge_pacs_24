@@ -20,15 +20,20 @@ std::vector<double> operator*(const std::vector<double> &vec,
   return scalar * vec;
 }
 
-std::vector<double> operator-(const std::vector<double> &v1,
+std::vector<double> operator+(const std::vector<double> &v1,
                               const std::vector<double> &v2) {
   std::vector<double> result;
   // assume for simplicity that v1 and v2 have the same lenght (they are points
   // in 2D)
   for (int k = 0; k < 2; ++k) {
-    result.push_back(v1[k] - v2[k]);
+    result.push_back(v1[k] + v2[k]);
   }
   return result;
+}
+
+std::vector<double> operator-(const std::vector<double> &v1,
+                              const std::vector<double> &v2) {
+  return v1 + (-1 * v2);
 }
 
 double vector_norm(const std::vector<double> &vec) {

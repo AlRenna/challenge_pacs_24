@@ -8,10 +8,43 @@
 
 #include "learning_rate.hpp"
 #include "params.hpp"
+#include "vector_utilities.hpp"
+
+enum class Scheme { GradDescent, HeavyBall, Nesterov };
 
 // Gradient descent
-template <LearnRaterule choice>
-std::vector<double> grad_descent(const Parameters &params) {
+std::vector<double> grad_descent(const Parameters &params, const double alpha_k,
+                                 std::vector<double> x_k) {
+  std::vector<double> grad_x_k = params.grad(x_k);
+  std::vector<double> x_k_next = x_k - alpha_k * grad_x_k;
+  return x_k_next;
+}
+
+// Heavy Ball
+std::vector<double> heavy_ball(const Parameters &params, const double alpha_k,
+                               std::vector<double> &x_k,
+                               std::vector<double> &x_k_prev) {
+  double nu = params.nu;
+  std::vector<double> grad_x_k = params.grad(x_k);
+  std::vector<double> x_k_next =
+      x_k - alpha_k * grad_x_k + nu * (x_k - x_k_prev);
+  return x_k_next;
+}
+
+// Nesterov
+std::vector<double> nesterov(const Parameters &params, const double alpha_k,
+                             std::vector<double> &x_k,
+                             std::vector<double> &x_k_prev) {
+  double nu = params.nu;
+  std::vector<double> y = x_k + nu * (x_k - x_k_prev);
+  std::vector<double> grad_y = params.grad(x_k);
+  std::vector<double> x_k_next = y - alpha_k * grad_y;
+  return x_k_next;
+}
+
+//
+template <Scheme Sc_choice, LearnRaterule LR_choice>
+std::vector<double> apply_scheme(const Parameters &params) {
   std::vector<double> x_k = params.x_0;
   double alpha_0 = params.alpha_0;
   double mu = params.mu;
@@ -20,37 +53,47 @@ std::vector<double> grad_descent(const Parameters &params) {
   double eps_s = params.eps_s;
   int max_iter = params.max_iter;
 
-  bool max_iter_check = true;
+  std::vector<double> x_k_prev = x_k;
+
+  // bool max_iter_check = true;
 
   for (int k = 0; k < max_iter; ++k) {
-    std::vector<double> grad_x_k = params.grad(x_k);
-    double alpha_k = compute_alpha<choice>(params.fun, params.grad, x_k,
-                                           alpha_0, mu, sigma, k);
-    std::vector<double> x_k_1 = x_k - grad_x_k * alpha_k;
+    std::vector<double> x_k_next;
+    double alpha_k = compute_alpha<LR_choice>(params.fun, params.grad, x_k,
+                                              alpha_0, mu, sigma, k);
+
+    if constexpr (Sc_choice == Scheme::GradDescent) {
+      x_k_next = grad_descent(params, alpha_k, x_k);
+    } else if constexpr (Sc_choice == Scheme::HeavyBall) {
+      x_k_next = heavy_ball(params, alpha_k, x_k, x_k_prev);
+    } else if constexpr (Sc_choice == Scheme::Nesterov) {
+      x_k_next = nesterov(params, alpha_k, x_k, x_k_prev);
+    }
 
     double f_x_k = params.fun(x_k);
-    double f_x_k_1 = params.fun(x_k_1);
+    double f_x_k_next = params.fun(x_k_next);
 
     // step lenght check
-    if (vector_norm(x_k_1 - x_k) < eps_s) {
-      std::cout << "Verified step lenght check\n" << std::endl;
-      max_iter_check = false;
+    if (vector_norm(x_k_next - x_k) < eps_s) {
+      // std::cout << "Verified step lenght check\n" << std::endl;
+      // max_iter_check = false;
       break;
     }
 
     // residual check
-    if (std::abs(f_x_k_1 - f_x_k) < eps_r) {
-      std::cout << "Verified residual check\n" << std::endl;
-      max_iter_check = false;
+    if (std::abs(f_x_k_next - f_x_k) < eps_r) {
+      // std::cout << "Verified residual check\n" << std::endl;
+      // max_iter_check = false;
       break;
     }
 
-    x_k = x_k_1;
+    x_k_prev = x_k;
+    x_k = x_k_next;
   }
-  if (max_iter_check) {
-    std::cout << "Reached max number of iterations. No convergence\n"
-              << std::endl;
-  }
+  // if (max_iter_check) {
+  //   std::cout << "Reached max number of iterations. No convergence\n"
+  //             << std::endl;
+  // }
 
   return x_k;
 }

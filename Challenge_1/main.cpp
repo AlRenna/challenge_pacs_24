@@ -16,8 +16,8 @@ std::vector<double> grad_f(const std::vector<double> &x) {
   return {x[1] + 16 * pow(x[0], 3) + 3, x[0] + 2 * x[1]};
 }
 
-void print_to_file(std::fstream &out_result, const std::string rule,
-                   const std::string scheme, const std::vector<double> result,
+void print_to_file(std::fstream &out_result, const std::string scheme,
+                   const std::string rule, const std::vector<double> result,
                    Parameters &params) {
   out_result << scheme << " - " << rule << "\n"
              << "Minimum point found: (" << result[0] << ", " << result[1]
@@ -31,17 +31,14 @@ int main() {
   params.fun = f;
   params.grad = grad_f;
 
-  std::cout << "Armijo Rule" << std::endl;
   std::vector<double> result_AR =
-      grad_descent<LearnRaterule::ArmijoRule>(params);
+      apply_scheme<Scheme::GradDescent, LearnRaterule::ArmijoRule>(params);
 
-  std::cout << "Exponential Decay" << std::endl;
   std::vector<double> result_ED =
-      grad_descent<LearnRaterule::ExponentialDecay>(params);
+      apply_scheme<Scheme::HeavyBall, LearnRaterule::ConstAlpha>(params);
 
-  std::cout << "Inverse Decay" << std::endl;
   std::vector<double> result_ID =
-      grad_descent<LearnRaterule::InverseDecay>(params);
+      apply_scheme<Scheme::Nesterov, LearnRaterule::ConstAlpha>(params);
 
   // OUTPUT TO TEXT FILE
   std::fstream out_result{"./results.txt", std::ios::out};
@@ -53,10 +50,9 @@ int main() {
 
     print_to_file(out_result, "Gradient Descent", "Armijo Rule", result_AR,
                   params);
-    print_to_file(out_result, "Gradient Descent", "Exponential Decay",
-                  result_ED, params);
-    print_to_file(out_result, "Gradient Descent", "Inverse Decay", result_ID,
+    print_to_file(out_result, "Heavy Ball", "Constant Alpha", result_ED,
                   params);
+    print_to_file(out_result, "Nesterov", "Constant Alpha", result_ID, params);
   }
   out_result.close();
 

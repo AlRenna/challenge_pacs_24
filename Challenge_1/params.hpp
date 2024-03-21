@@ -17,6 +17,7 @@ struct Parameters {
   double alpha_0;
   int max_iter;
   double mu;
+  double nu;
   double sigma;
 };
 

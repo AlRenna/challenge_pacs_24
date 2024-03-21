@@ -7,5 +7,5 @@ eps_r = 1e-6
 eps_s = 1e-6
 alpha_0 = 1.0
 max_iter = 1000
-mu = 0.2
+mu = 1
 sigma = 0.1

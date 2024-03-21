@@ -22,5 +22,6 @@ Parameters::Parameters(const std::string &filename) {
   alpha_0 = datafile("alpha_0", 1.0);
   max_iter = datafile("max_iter", 1000);
   mu = datafile("mu", 0.2);
+  nu = datafile("nu", 0.9);
   sigma = datafile("sigma", 0.1);
 }

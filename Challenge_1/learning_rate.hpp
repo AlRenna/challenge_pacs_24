@@ -8,7 +8,12 @@
 
 #include "vector_utilities.hpp"
 
-enum class LearnRaterule { ArmijoRule, ExponentialDecay, InverseDecay };
+enum class LearnRaterule {
+  ArmijoRule,
+  ExponentialDecay,
+  InverseDecay,
+  ConstAlpha
+};
 
 // Armijo rule
 double armijo_rule(
@@ -35,6 +40,7 @@ double inv_decay(const double alpha_0, const int iter, double mu) {
   return alpha_0 / (1 + mu * iter);
 }
 
+//
 template <LearnRaterule choice>
 double compute_alpha(
     const std::function<double(const std::vector<double> &)> &fun,
@@ -50,9 +56,8 @@ double compute_alpha(
     return inv_decay(alpha_0, iter, mu);
   } else if constexpr (choice == LearnRaterule::ArmijoRule) {
     return armijo_rule(fun, grad, x_k, alpha_0, sigma);
-  } else {
-    // Default case
-    return alpha_0 / 2;
+  } else if constexpr (choice == LearnRaterule::ConstAlpha) {
+    return alpha_0;
   }
 }
 
