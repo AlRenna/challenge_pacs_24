@@ -27,7 +27,7 @@ $(OBJS): $(SRCS) $(HEADERS)
 
 
 clean:
-	$(RM) *.o 
+	$(RM) *.o results.txt
 
 distclean: clean
 	$(RM) *~

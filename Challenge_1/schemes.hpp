@@ -1,5 +1,5 @@
-#ifndef GRAD_DESCENT_HPP
-#define GRAD_DESCENT_HPP
+#ifndef SCHEMES_HPP
+#define SCHEMES_HPP
 
 #include <cmath>
 #include <functional>
@@ -10,6 +10,7 @@
 #include "params.hpp"
 
 // Gradient descent
+template <LearnRaterule choice>
 std::vector<double> grad_descent(const Parameters &params) {
   std::vector<double> x_k = params.x_0;
   double alpha_0 = params.alpha_0;
@@ -23,8 +24,8 @@ std::vector<double> grad_descent(const Parameters &params) {
 
   for (int k = 0; k < max_iter; ++k) {
     std::vector<double> grad_x_k = params.grad(x_k);
-    double alpha_k =
-        armijo_rule(params.fun, params.grad, x_k, alpha_0, mu, sigma);
+    double alpha_k = compute_alpha<choice>(params.fun, params.grad, x_k,
+                                           alpha_0, mu, sigma, k);
     std::vector<double> x_k_1 = x_k - grad_x_k * alpha_k;
 
     double f_x_k = params.fun(x_k);
@@ -54,4 +55,4 @@ std::vector<double> grad_descent(const Parameters &params) {
   return x_k;
 }
 
-#endif // GRAD_DESCENT_HPP
+#endif // SCHEMES_HPP
