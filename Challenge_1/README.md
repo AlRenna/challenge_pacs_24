@@ -19,3 +19,7 @@ The results are printed in ***results.txt***.
 - **learning_rate.hpp**: learning rate rules for parameter alpha - *Armijo Rule*, *Exponential Decay*, *Inverse Decay*, *Constant Alpha*;
 - **schemes.hpp**: gradient methods - *Gradient Descent*, *Heavy Ball*, *Nesterov*;
 - **params.hpp** and **params.cpp**: Paramters struct.
+
+Inside **main.cpp**, the function template **apply_scheme()** is called several times to compute the minimum with different methods and rules (for the learning rate). These are chosen using two enumerator as template parameters, one for the methods and the other for the learning rate rule.
+
+
