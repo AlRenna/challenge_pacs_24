@@ -35,10 +35,8 @@ int main() {
       apply_scheme<Scheme::GradDescent, LearnRaterule::ArmijoRule>(params);
 
   std::vector<double> result_ED =
-      apply_scheme<Scheme::HeavyBall, LearnRaterule::ConstAlpha>(params);
-
-  std::vector<double> result_ID =
-      apply_scheme<Scheme::Nesterov, LearnRaterule::ConstAlpha>(params);
+      apply_scheme<Scheme::GradDescent, LearnRaterule::ExponentialDecay>(
+          params);
 
   // OUTPUT TO TEXT FILE
   std::fstream out_result{"./results.txt", std::ios::out};
@@ -50,9 +48,8 @@ int main() {
 
     print_to_file(out_result, "Gradient Descent", "Armijo Rule", result_AR,
                   params);
-    print_to_file(out_result, "Heavy Ball", "Constant Alpha", result_ED,
-                  params);
-    print_to_file(out_result, "Nesterov", "Constant Alpha", result_ID, params);
+    print_to_file(out_result, "Gradient Descent", "Exponential Decay",
+                  result_ED, params);
   }
   out_result.close();
 
