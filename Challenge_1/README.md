@@ -4,8 +4,11 @@
  ## Execution:
 
 The make command has 3 functions: all (default), clean, distclean.
+
 ***make all*** creates the executable.
+
 ***make clean*** and ***make distclean*** are cleanup commands.
+
 Data can be set inside ***data.txt***.
 The results are printed in ***results.txt***.
 
