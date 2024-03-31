@@ -15,6 +15,7 @@ enum class Scheme { GradDescent, HeavyBall, Nesterov };
 // Gradient descent
 std::vector<double> grad_descent(const Parameters &params, const double alpha_k,
                                  std::vector<double> x_k) {
+                                  // @note better pass vectors by const&
   std::vector<double> grad_x_k = params.grad(x_k);
   std::vector<double> x_k_next = x_k - alpha_k * grad_x_k;
   return x_k_next;
@@ -24,6 +25,8 @@ std::vector<double> grad_descent(const Parameters &params, const double alpha_k,
 std::vector<double> heavy_ball(const Parameters &params, const double alpha_k,
                                std::vector<double> &x_k,
                                std::vector<double> &x_k_prev) {
+                                //@note pass by const& the vectors. They are not changed
+                                // by the function
   double nu = params.nu;
   std::vector<double> grad_x_k = params.grad(x_k);
   std::vector<double> x_k_next =
@@ -35,11 +38,17 @@ std::vector<double> heavy_ball(const Parameters &params, const double alpha_k,
 std::vector<double> nesterov(const Parameters &params, const double alpha_k,
                              std::vector<double> &x_k,
                              std::vector<double> &x_k_prev) {
+                              //@note again pass by const& the vectors
   double nu = params.nu;
   std::vector<double> y = x_k + nu * (x_k - x_k_prev);
   std::vector<double> grad_y = params.grad(x_k);
   std::vector<double> x_k_next = y - alpha_k * grad_y;
   return x_k_next;
+//@note in this cases it is better to return the result as
+// return y - alpha_k * grad_y;
+// you avoid the copy of the vector if RVO can be applied
+// It applies in all the functions
+
 }
 
 //

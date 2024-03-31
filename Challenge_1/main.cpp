@@ -16,6 +16,7 @@ std::vector<double> grad_f(const std::vector<double> &x) {
   return {x[1] + 16 * pow(x[0], 3) + 3, x[0] + 2 * x[1]};
 }
 
+//@note nice the idea of a functio to print
 void print_to_file(std::fstream &out_result, const std::string scheme,
                    const std::string rule, const std::vector<double> result,
                    Parameters &params) {
@@ -31,6 +32,7 @@ int main() {
   params.fun = f;
   params.grad = grad_f;
 
+//@note nice the idea of enumerators to identify the strategy
   std::vector<double> result_AR =
       apply_scheme<Scheme::GradDescent, LearnRaterule::ArmijoRule>(params);
 
@@ -39,6 +41,8 @@ int main() {
           params);
 
   // OUTPUT TO TEXT FILE
+  //@note You can simplify by using std::ofstream which has already
+  // the options to open the file in output mode
   std::fstream out_result{"./results.txt", std::ios::out};
   if (!out_result) {
     std::cerr << " File open error " << std::endl;
