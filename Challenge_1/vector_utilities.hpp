@@ -9,7 +9,10 @@
 std::vector<double> operator*(const double scalar,
                               const std::vector<double> &vec) {
   std::vector<double> result;
+  //@note If you paln to use push_back try to reserve first
+  // result.reserve(vec.size());
   for (const auto &elem : vec) {
+    // @note you can use emplace_back to avoid the copy
     result.push_back(scalar * elem);
   }
   return result;
